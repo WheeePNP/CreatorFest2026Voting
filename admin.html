@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Creator Fest 2026 Voting — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .wrap { max-width: 720px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+    .mini-note { font-size: 12px; color: var(--gray); margin-top: 4px; }
+    .contestant-admin-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid #ece7fb; }
+    .contestant-admin-row input[type="text"] { flex: 1; }
+    .contestant-admin-row input.num-input { width: 56px; flex: none; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <img src="assets/logo.png" alt="Creator Fest" class="brand-logo" />
+      <small>Admin</small>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- ADMIN CODE GATE -->
+    <section id="screen-gate">
+      <div class="card">
+        <h1>Admin access</h1>
+        <p class="lead">Enter the admin code to manage voters, finalists, and voting status.</p>
+        <label for="admin-code-input">Admin code</label>
+        <input type="password" id="admin-code-input" autocomplete="off" />
+        <div id="gate-error" class="error-box hidden"></div>
+        <div style="height:14px"></div>
+        <button class="btn-primary" id="gate-btn"><span id="gate-btn-label">Enter</span></button>
+      </div>
+    </section>
+
+    <!-- ADMIN PANEL -->
+    <section id="screen-admin" class="hidden">
+
+      <div class="tab-row">
+        <button data-tab="status" class="active">Voting status</button>
+        <button data-tab="voters">Voters</button>
+        <button data-tab="contestants">Finalists</button>
+        <button data-tab="results">Results</button>
+      </div>
+
+      <!-- STATUS TAB -->
+      <div class="tab-panel" id="tab-status">
+        <div class="card">
+          <h2>Cre8 Movement</h2>
+          <p class="lead" id="status-text-movement">Loading...</p>
+          <div class="row">
+            <button class="btn-secondary btn-small" id="open-movement">Start voting</button>
+            <button class="btn-ghost btn-small" id="close-movement">End voting</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Cre8 Sound</h2>
+          <p class="lead" id="status-text-sound">Loading...</p>
+          <div class="row">
+            <button class="btn-secondary btn-small" id="open-sound">Start voting</button>
+            <button class="btn-ghost btn-small" id="close-sound">End voting</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VOTERS TAB -->
+      <div class="tab-panel hidden" id="tab-voters">
+        <div class="card">
+          <h2>Bulk import voters</h2>
+          <p class="lead">One per line: <code>phone,points</code>. Existing numbers are overwritten with the new points value. Example:<br><code>012-345 6789,10</code></p>
+          <textarea id="import-textarea" placeholder="012-345 6789,10&#10;0198765432,5"></textarea>
+          <div class="mini-note" id="import-count"></div>
+          <div id="import-error" class="error-box hidden"></div>
+          <div id="import-success" class="success-box hidden"></div>
+          <div style="height:10px"></div>
+          <button class="btn-primary" id="import-btn"><span id="import-btn-label">Import voters</span></button>
+        </div>
+        <div class="card">
+          <h2>Look up a voter</h2>
+          <div class="row">
+            <input type="tel" id="lookup-phone" placeholder="Phone number" />
+            <button class="btn-secondary btn-small" id="lookup-btn" style="width:auto">Check</button>
+          </div>
+          <div id="lookup-result" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <!-- CONTESTANTS TAB -->
+      <div class="tab-panel hidden" id="tab-contestants">
+        <div class="card">
+          <h2>Cre8 Movement finalists</h2>
+          <div id="contestants-movement"></div>
+          <div class="row" style="margin-top:10px">
+            <input type="text" id="new-name-movement" placeholder="Finalist name" />
+            <input type="number" id="new-num-movement" placeholder="#" class="num-input" style="width:70px" />
+            <button class="btn-secondary btn-small" id="add-movement" style="width:auto">Add</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Cre8 Sound finalists</h2>
+          <div id="contestants-sound"></div>
+          <div class="row" style="margin-top:10px">
+            <input type="text" id="new-name-sound" placeholder="Finalist name" />
+            <input type="number" id="new-num-sound" placeholder="#" class="num-input" style="width:70px" />
+            <button class="btn-secondary btn-small" id="add-sound" style="width:auto">Add</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS TAB -->
+      <div class="tab-panel hidden" id="tab-results">
+        <div class="card">
+          <h2>Cre8 Movement — live results</h2>
+          <table class="results" id="results-movement"><tbody></tbody></table>
+        </div>
+        <div class="card">
+          <h2>Cre8 Sound — live results</h2>
+          <table class="results" id="results-sound"><tbody></tbody></table>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+rules_version = '2';
+
+// ---------------------------------------------------------------------------
+// Creator Fest 2026 voting app — Firestore security rules.
+//
+// HOW TO DEPLOY: Firebase Console -> Firestore Database -> Rules tab ->
+// paste this whole file in, replacing what's there -> Publish.
+//
+// SET YOUR ADMIN CODE BELOW (the ADMIN_CODE constant) and make sure the
+// exact same value is set as ADMIN_CODE in firebase-config.js. If they
+// don't match, admin login in admin.html will fail.
+// ---------------------------------------------------------------------------
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ⚠️ Set this to a code only your committee knows. Keep it in sync with
+    // the ADMIN_CODE value in firebase-config.js.
+    function ADMIN_CODE() {
+      return "CF2026ADMIN";
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // True once this browser session has successfully "unlocked" admin mode
+    // by writing the correct code to adminTokens/{their uid} (see admin.js).
+    // adminTokens itself is never readable by anyone, so the code can never
+    // leak back out through a read — only the one-way write check below.
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/adminTokens/$(request.auth.uid));
+    }
+
+    // Admin-login token. Creating/overwriting your own token doc is only
+    // allowed if you supply the correct code. Nobody can read this
+    // collection back (read: false), so the code is never exposed.
+    match /adminTokens/{uid} {
+      allow read: if false;
+      allow write: if isSignedIn() &&
+        request.auth.uid == uid &&
+        request.resource.data.adminCode == ADMIN_CODE();
+    }
+
+    // Attendees, keyed by normalized phone number. Public read so the app
+    // can show a voter's points; only admin (via bulk import or edits) can
+    // write.
+    match /voters/{phone} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Finalists for each competition. Public read so the voting page can
+    // list them; only admin can add/edit/remove.
+    match /contestants_movement/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /contestants_sound/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Open/closed state for each competition (config/main holds
+    // movementOpen / soundOpen booleans). Public read, admin-only write.
+    match /config/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Votes. One doc per phone number per competition. Public read (so
+    // results can be tallied live); any signed-in (anonymous) session may
+    // CREATE their own vote once, but can never update or delete it —
+    // votes are final once submitted. Admin never needs to write here.
+    match /votes_movement/{phone} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.phone == phone;
+      allow update, delete: if false;
+    }
+    match /votes_sound/{phone} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.phone == phone;
+      allow update, delete: if false;
+    }
+  }
+}

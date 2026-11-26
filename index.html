@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Creator Fest 2026 Voting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <img src="assets/logo.png" alt="Creator Fest" class="brand-logo" />
+      <small>Live Voting</small>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- LOGIN SCREEN -->
+    <section id="screen-login">
+      <div class="card">
+        <h1>Cast your vote</h1>
+        <p class="lead">Enter the phone number you registered with to check your voting points and vote for your favourite acts.</p>
+        <label for="phone-input">Phone number</label>
+        <input type="tel" id="phone-input" inputmode="numeric" placeholder="e.g. 012-345 6789" autocomplete="tel" />
+        <div id="login-error" class="error-box hidden"></div>
+        <div style="height:14px"></div>
+        <button class="btn-primary" id="login-btn">
+          <span id="login-btn-label">Continue</span>
+        </button>
+      </div>
+      <p class="footer-note">Can't find your number? Check with the registration booth.</p>
+    </section>
+
+    <!-- HOME SCREEN (after login) -->
+    <section id="screen-home" class="hidden">
+      <div class="points-banner" id="points-banner">
+        <span>Your voting points</span>
+        <span class="num" id="points-value">0</span>
+      </div>
+
+      <div class="card" id="comp-card-movement">
+        <span class="pill" id="pill-movement">Loading...</span>
+        <h2>Cre8 Movement</h2>
+        <p class="lead" id="desc-movement">Dance competition finalists.</p>
+        <button class="btn-primary" id="btn-vote-movement">Vote now</button>
+      </div>
+
+      <div class="card" id="comp-card-sound">
+        <span class="pill" id="pill-sound">Loading...</span>
+        <h2>Cre8 Sound</h2>
+        <p class="lead" id="desc-sound">Singing competition finalists.</p>
+        <button class="btn-primary" id="btn-vote-sound">Vote now</button>
+      </div>
+
+      <button class="link-btn" id="logout-btn">Not you? Switch number</button>
+    </section>
+
+    <!-- VOTING SCREEN -->
+    <section id="screen-vote" class="hidden">
+      <button class="link-btn" id="back-btn">&larr; Back</button>
+      <div class="card">
+        <h2 id="vote-title">Competition</h2>
+        <p class="lead">Split your points across as many finalists as you like. Once submitted, your vote is final.</p>
+        <div class="points-banner" id="vote-points-banner">
+          <span>Points remaining</span>
+          <span class="num" id="vote-points-remaining">0</span>
+        </div>
+        <div id="contestant-list"></div>
+        <div id="vote-error" class="error-box hidden"></div>
+        <div style="height:6px"></div>
+        <button class="btn-primary" id="submit-vote-btn">Submit my vote</button>
+      </div>
+    </section>
+
+    <!-- ALREADY VOTED / RESULT SCREEN -->
+    <section id="screen-voted" class="hidden">
+      <button class="link-btn" id="voted-back-btn">&larr; Back</button>
+      <div class="card">
+        <span class="pill voted">Vote submitted</span>
+        <h2 id="voted-title">Thanks for voting!</h2>
+        <p class="lead">Here is what you submitted. Votes can't be changed once submitted.</p>
+        <div id="voted-breakdown"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <script type="module" src="js/vote.js"></script>
+</body>
+</html>
